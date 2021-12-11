@@ -1,0 +1,6 @@
+conteneuriser flask +
+entraîner un modèle ml+
+task management : trello
+source code management: github + 3 branches for every tasks
+Unit test
+projet final is a dockeurisation
