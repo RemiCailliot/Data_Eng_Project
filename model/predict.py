@@ -43,8 +43,7 @@ def lm(list_stem):
         lm_words.append(lemmatizer.lemmatize(w,pos ="a"))
     return lm_words
 
-value="Hello Guys i'm fine !"
-
+value="i hate myself !"
 value = re.sub('[%s]' % re.escape(string.punctuation), '' , value)
 value = scrub_words(value)
 value = nltk.word_tokenize(value)
@@ -52,21 +51,11 @@ value = sw(value)
 value = lm(value)
 value = pd.DataFrame({"Value" :[" ".join(value)]})
 print(value)
-value= cv.fit_transform(value)
-print(value)
-# with open('./predict_src/alpha.txt', "r") as myfile:
-#     alpha = myfile.readlines()
-# with open('./predict_src/l1_ratio.txt', "r") as myfile:
-#     l1_ratio = myfile.readlines()
 
-# alpha = float(alpha[0])
-# l1_ratio = float(l1_ratio[0])
-
-# print('Alpha :', alpha)
-# print('Learning rate :', l1_ratio)
-
-    #predictions
+#predictions
 model = pickle.load(open('./predict_src/clf.sav', 'rb'))
+vectorizer = pickle.load(open('./predict_src/vectorizer.sav', 'rb'))
+value = vectorizer.transform(value['Value'])
 predicted= model.predict(value)
 print("value:",predicted)
 

@@ -33,7 +33,7 @@ def scrub_words(text):
 df['clean_text'] = df.apply(lambda row: scrub_words(row['clean_text']), axis=1)
 
 #tokenize text by word
-print("Tokenizing text in word")
+print("Tokenizing texts in words...")
 df['tokenized_text'] = df.apply(lambda row: nltk.word_tokenize(row['clean_text']), axis=1)
 
 #remove stopwords
