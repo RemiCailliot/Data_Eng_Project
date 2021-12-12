@@ -1,25 +1,57 @@
 
 import pandas as pd
-from sklearn import preprocessing
-from sklearn.preprocessing import normalize 
-import io
+import re
+import string
+import nltk
+nltk.download('stopwords')
+nltk.download('punkt')
+nltk.download('wordnet')
+from nltk.corpus import stopwords
+from nltk import word_tokenize
+from nltk.tokenize import sent_tokenize
+from nltk.probability import FreqDist
+from nltk.stem import PorterStemmer
+from nltk.stem import WordNetLemmatizer
 
-df_train=pd.read_csv("../prepared_application_train.csv")
-#df_train.columns
+#get modified dataset for feature_engineering
+df=pd.read_csv("../data/prepared_application_train.csv")
 
-#removing outliers
-Q1 = df_train.quantile(0.05)
-Q3 = df_train.quantile(0.95)
-IQR = Q3 - Q1
+#remove punctuation
+df['clean_text'] = df['clean_text'].apply(lambda x: re.sub('[%s]' % re.escape(string.punctuation), '' , x))
 
-df_train = df_train[~((df_train < (Q1 - 1.5 * IQR)) |(df_train > (Q3 + 1.5 * IQR))).any(axis=1)]
+#clean text
+def scrub_words(text):    
+    # remove html markup
+    text=re.sub("(<.*?>)","",text)
+    #remove non-ascii and digits
+    text=re.sub("(\\W|\\d)"," ",text)
+    #remove whitespace
+    text=text.strip()
+    return text
+df['clean_text'] = df.apply(lambda row: scrub_words(row['clean_text']), axis=1)
 
-print(df_train)
 
-#normalize
+#tokenize text by word
+df['tokenized_text'] = df.apply(lambda row: nltk.word_tokenize(row['clean_text']), axis=1)
 
-min_max_scaler = preprocessing.MinMaxScaler()
-df_train_scaled= min_max_scaler.fit_transform(df_train)
-df_train_normalized=pd.DataFrame(df_train_scaled,columns=df_train.columns)
+#remove stopwords
+stop_words=set(stopwords.words("english"))
+def sw(list_words):
+    filtered_sent=[]
+    for w in list_words: 
+        if w not in stop_words:
+            filtered_sent.append(w)
+    return filtered_sent
+df['tokenized_text_stopwords'] = df.apply(lambda row: sw(row['tokenized_text']), axis=1)
 
-df_train_normalized.to_csv("../final_application_train.csv",index=False)
+# lemmatize words
+lemmatizer = WordNetLemmatizer()
+def lm(list_stem):
+    lm_words=[]
+    for w in list_stem:
+        lm_words.append(lemmatizer.lemmatize(w,pos ="a"))
+    return lm_words
+df['tokenized_text_stopwords_lemmatized'] = df.apply(lambda row: lm(row['tokenized_text_stopwords']), axis=1)
+
+#save data for next stage
+df.to_csv("../data/final_application_train.csv",index=False)
