@@ -1,0 +1,9 @@
+re
+flask
+pandas
+string
+nltk
+os
+sys
+scikit-learn
+pickle
