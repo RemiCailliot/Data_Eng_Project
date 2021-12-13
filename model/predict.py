@@ -60,9 +60,9 @@ def prediction(string_to_predict):
     predicted= model.predict(value)
     end=""
     if (predicted.item(0)==1.0):
-        end= str("Good")
+        end= str("Positive")
     if (predicted.item(0)==-1.0):
-        end= str("Bad")
+        end= str("Negative")
     if predicted.item(0)==0.0:
         end= str("Neutral")
     return end
