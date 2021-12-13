@@ -18,44 +18,52 @@ from sklearn.feature_extraction.text import CountVectorizer
 from nltk.tokenize import RegexpTokenizer
 pd.options.mode.chained_assignment = None
 
-stop_words=set(stopwords.words("english"))
-lemmatizer = WordNetLemmatizer()
-token = RegexpTokenizer(r'[a-zA-Z0-9]+')
-cv = CountVectorizer(lowercase=True,stop_words='english',ngram_range = (1,1),tokenizer = token.tokenize)
+def prediction(string_to_predict):
 
-def scrub_words(text):    
-    # remove html markup
-    text=re.sub("(<.*?>)","",text)
-    #remove non-ascii and digits
-    text=re.sub("(\\W|\\d)"," ",text)
-    #remove whitespace
-    text=text.strip()
-    return text
-def sw(list_words):
-    filtered_sent=[]
-    for w in list_words: 
-        if w not in stop_words:
-            filtered_sent.append(w)
-    return filtered_sent
-def lm(list_stem):
-    lm_words=[]
-    for w in list_stem:
-        lm_words.append(lemmatizer.lemmatize(w,pos ="a"))
-    return lm_words
+    stop_words=set(stopwords.words("english"))
+    lemmatizer = WordNetLemmatizer()
+    token = RegexpTokenizer(r'[a-zA-Z0-9]+')
+    cv = CountVectorizer(lowercase=True,stop_words='english',ngram_range = (1,1),tokenizer = token.tokenize)
 
-value="i hate myself !"
-value = re.sub('[%s]' % re.escape(string.punctuation), '' , value)
-value = scrub_words(value)
-value = nltk.word_tokenize(value)
-value = sw(value)
-value = lm(value)
-value = pd.DataFrame({"Value" :[" ".join(value)]})
-print(value)
+    def scrub_words(text):    
+        # remove html markup
+        text=re.sub("(<.*?>)","",text)
+        #remove non-ascii and digits
+        text=re.sub("(\\W|\\d)"," ",text)
+        #remove whitespace
+        text=text.strip()
+        return text
+    def sw(list_words):
+        filtered_sent=[]
+        for w in list_words: 
+            if w not in stop_words:
+                filtered_sent.append(w)
+        return filtered_sent
+    def lm(list_stem):
+        lm_words=[]
+        for w in list_stem:
+            lm_words.append(lemmatizer.lemmatize(w,pos ="a"))
+        return lm_words
 
-#predictions
-model = pickle.load(open('./predict_src/clf.sav', 'rb'))
-vectorizer = pickle.load(open('./predict_src/vectorizer.sav', 'rb'))
-value = vectorizer.transform(value['Value'])
-predicted= model.predict(value)
-print("value:",predicted)
+    value = string_to_predict
+    value = re.sub('[%s]' % re.escape(string.punctuation), '' , value)
+    value = scrub_words(value)
+    value = nltk.word_tokenize(value)
+    value = sw(value)
+    value = lm(value)
+    value = pd.DataFrame({"Value" :[" ".join(value)]})
+
+    #predictions
+    model = pickle.load(open('../predict_src/clf.sav', 'rb'))
+    vectorizer = pickle.load(open('../predict_src/vectorizer.sav', 'rb'))
+    value = vectorizer.transform(value['Value'])
+    predicted= model.predict(value)
+    end=""
+    if (predicted.item(0)==1.0):
+        end= str("Good")
+    if (predicted.item(0)==-1.0):
+        end= str("Bad")
+    if predicted.item(0)==0.0:
+        end= str("Neutral")
+    return end
 
