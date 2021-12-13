@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn import metrics
 import pickle
 pd.options.mode.chained_assignment = None
-df=pd.read_csv("./data/final_application_train.csv")
+df=pd.read_csv("../data/final_application_train.csv")
 
 #drop all unused columns
 print("Dropping unused columns in the dataset...")
@@ -35,6 +35,6 @@ clf = model.fit(X_train, y_train)
 predicted= clf.predict(X_test)
 print("MultinomialNB Accuracy:",metrics.accuracy_score(y_test, predicted))
 print("Saving model...")
-pickle.dump(clf, open('./predict_src/clf.sav', 'wb'))
-pickle.dump(text_counts, open('./predict_src/vectorizer.sav', 'wb'))
+pickle.dump(clf, open('../predict_src/clf.sav', 'wb'))
+pickle.dump(text_counts, open('../predict_src/vectorizer.sav', 'wb'))
 print("Done!")

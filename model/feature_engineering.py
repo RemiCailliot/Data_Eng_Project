@@ -14,7 +14,7 @@ from nltk.stem import PorterStemmer
 from nltk.stem import WordNetLemmatizer
 pd.options.mode.chained_assignment = None
 #get modified dataset for feature_engineering
-df=pd.read_csv("./data/prepared_application_train.csv")
+df=pd.read_csv("../data/prepared_application_train.csv")
 
 #remove punctuation
 print("Removing punctuation in the dataset...")
@@ -59,5 +59,5 @@ df['tokenized_text_stopwords_lemmatized'] = df.apply(lambda row: lm(row['tokeniz
 
 #save data for next stage
 print("Saving Dataset")
-df.to_csv("./data/final_application_train.csv",index=False)
+df.to_csv("../data/final_application_train.csv",index=False)
 print("Done!")

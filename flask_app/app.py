@@ -1,4 +1,3 @@
-from flask import Flask, request, render_template
 import numpy as np
 import pickle
 import pandas as pd
@@ -17,7 +16,10 @@ from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import CountVectorizer
 from nltk.tokenize import RegexpTokenizer
 pd.options.mode.chained_assignment = None
+print("ok")
 from model import predict
+print("ok")
+from flask import Flask, request, render_template
 app = Flask(__name__)
 
 @app.route('/')
@@ -28,4 +30,5 @@ def my_form():
 def my_form_post():
     text = request.form['text']
     processed_text = predict.prediction(text)
+    
     return processed_text
