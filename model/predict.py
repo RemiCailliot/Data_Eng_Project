@@ -54,8 +54,8 @@ def prediction(string_to_predict):
     value = pd.DataFrame({"Value" :[" ".join(value)]})
 
     #predictions
-    model = pickle.load(open('../predict_src/clf.sav', 'rb'))
-    vectorizer = pickle.load(open('../predict_src/vectorizer.sav', 'rb'))
+    model = pickle.load(open('./predict_src/clf.sav', 'rb'))
+    vectorizer = pickle.load(open('./predict_src/vectorizer.sav', 'rb'))
     value = vectorizer.transform(value['Value'])
     predicted= model.predict(value)
     end=""

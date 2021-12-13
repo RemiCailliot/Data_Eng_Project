@@ -59,5 +59,6 @@ df['tokenized_text_stopwords_lemmatized'] = df.apply(lambda row: lm(row['tokeniz
 
 #save data for next stage
 print("Saving Dataset")
-df.to_csv("../data/final_application_train.csv",index=False)
+df2=df[['tokenized_text_stopwords_lemmatized','category']]
+df2.to_csv("../data/final_application_train.csv",index=False)
 print("Done!")
